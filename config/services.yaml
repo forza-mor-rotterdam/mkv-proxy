@@ -22,3 +22,9 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Controller\MorCoreController:
+        bind:
+            $morCoreDomain: '%env(APP_MOR_CORE_DOMAIN)%'
+            $proxyDomain: '%env(APP_PROXY_DOMAIN)%'
+            $morCoreSecret: '%env(APP_MOR_CORE_SECRET)%'

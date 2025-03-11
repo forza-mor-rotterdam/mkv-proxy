@@ -8,6 +8,11 @@ framework:
     #esi: true
     #fragments: true
 
+    http_client:
+        scoped_clients:
+            mor_core.client:
+                base_uri: 'https://%env(APP_MOR_CORE_DOMAIN)%'
+
 when@test:
     framework:
         test: true
