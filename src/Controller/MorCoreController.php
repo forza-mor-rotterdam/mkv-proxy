@@ -25,19 +25,33 @@ class MorCoreController extends AbstractController
     }
 
     #[Route('/api-token-auth/', methods: ['POST'])]
-    public function apiTokenAuth(Request $request, HttpClientInterface $morCoreClient): Response
+    public function apiTokenAuth(Request $request, HttpClientInterface $morCoreClient, LoggerInterface $logger, string $encryptionKey): Response
     {
-        return $this->mapResponse($morCoreClient->request('POST', '/api-token-auth/', [
+        $logger->notice('Token request', ['username' => $request->request->get('username')]);
+
+        $response = $this->mapResponse($sourceApiResponse = $morCoreClient->request('POST', '/api-token-auth/', [
             'body' => [
                 'username' => $request->request->get('username') . '_via_proxy@forzamor.nl',
                 'password' => $request->request->get('password') . $this->morCoreSecret,
             ]
         ]));
+
+        if ($sourceApiResponse->getStatusCode() === 200) {
+            $content = $sourceApiResponse->toArray();
+
+            $content['token'] = openssl_encrypt($content['token'], 'aes-128-cbc', $this->morCoreSecret, iv: $encryptionKey);
+
+            $response->setContent(json_encode($content));
+        }
+
+        return $response;
     }
 
     #[Route('/api/v1/melding/', methods: ['GET'])]
-    public function meldingen(Request $request, HttpClientInterface $morCoreClient): Response
+    public function meldingen(Request $request, HttpClientInterface $morCoreClient, LoggerInterface $logger, string $encryptionKey): Response
     {
+        $logger->notice('Meldingen request', ['query' => $request->query->all()]);
+
         // only some specific query parameters are allowed, error on others
         foreach ($request->query->all() as $name => $value) {
             if (in_array($name, ['urgentie_gte', 'limit', 'offset', 'status']) === false) {
@@ -58,7 +72,7 @@ class MorCoreController extends AbstractController
         $response = $this->mapResponse($sourceApiResponse = $morCoreClient->request('GET', '/api/v1/melding/', [
             'query' => $request->query->all(),
             'headers' => [
-                'Authorization' => $request->headers->get('Authorization')
+                'Authorization' => 'Token ' . openssl_decrypt(substr($request->headers->get('Authorization'), strlen('Token ')), 'aes-128-cbc', $this->morCoreSecret, iv: $encryptionKey)
             ]
         ]));
 
@@ -84,7 +98,6 @@ class MorCoreController extends AbstractController
 
                 // remove all locaties that are not primair
                 $content['results'][$i]['locaties_voor_melding'] = array_values(array_filter($content['results'][$i]['locaties_voor_melding'], fn ($locatie) => boolval($locatie['primair']) === true));
-
 
                 // remove all fields in signalen_voor_melding that are not listed
                 foreach ($content['results'][$i]['signalen_voor_melding'] as $j => $locatie) {

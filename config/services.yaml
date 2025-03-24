@@ -28,3 +28,4 @@ services:
             $morCoreDomain: '%env(APP_MOR_CORE_DOMAIN)%'
             $proxyDomain: '%env(APP_PROXY_DOMAIN)%'
             $morCoreSecret: '%env(APP_MOR_CORE_SECRET)%'
+            $encryptionKey: '%env(base64:APP_ENCRYPTION_KEY)%'
