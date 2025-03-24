@@ -13,9 +13,6 @@ ENV FRANKENPHP_CONFIG="worker ./public/index.php"
 ENV APP_RUNTIME="Runtime\\FrankenPhpSymfony\\Runtime"
 
 RUN install-php-extensions \
-    curl \
-    intl \
-    mbstring \
     opcache \
     zip
 
