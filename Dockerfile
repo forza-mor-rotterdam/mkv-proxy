@@ -3,9 +3,7 @@ COPY . /app
 WORKDIR /app
 RUN composer install
 
-
-
-FROM dunglas/frankenphp:1-php8.3
+FROM dunglas/frankenphp:1-php8.3-bookworm
 
 ENV SERVER_NAME=localhost
 ENV SERVER_PORT=:80
