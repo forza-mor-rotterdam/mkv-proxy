@@ -32,7 +32,7 @@ De applicatie kan ook op traditionele omgevingen gedeployed worden. Zie hiervoor
 | Env | Waarvoor | Voorbeeld waarde | Opmerkingen |
 |-----|----------|------------------|-------------|
 | APP_ENV | app | `prod` | Symfony configuratie: `dev`, `test` of `prod` |
-| APP_SECRET | app | `NYjRkgXE8jbP23Ij4svHTWwsa1I` | Willeukige waarde |
+| APP_SECRET | app | `NYjRkgXE8jbP23Ij4svHTWwsa1I` | Willekeurige waarde |
 | APP_MOR_CORE_DOMAIN | app | `mor-core-test.forzamor.nl` | Domein waar de mor-core op draait, zonder protocol toevoeging, indien de poort afwijkend is voor 80 (http) of 443 (https) voeg dan het poortnummer toe met `:1234` |
 | APP_PROXY_DOMAIN | app | `mkv-test.forzamor.nl` | Domein waar deze applicatie op gehost wordt, indien de poort afwijkend is voor 80 (http) of 443 (https) voeg dan het poortnummer toe met `:5678` |
 | APP_MOR_CORE_SECRET | app | `64AJWLWLrEKrNvITXzjvj9jvkt` | In de proxy wordt het password met deze waarde gesuffixed. |
